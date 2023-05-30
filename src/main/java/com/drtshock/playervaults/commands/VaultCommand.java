@@ -27,10 +27,16 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.util.StringUtil;
 
-public class VaultCommand implements CommandExecutor {
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class VaultCommand implements CommandExecutor, TabCompleter {
     private final PlayerVaults plugin;
 
     public VaultCommand(PlayerVaults plugin) {
@@ -108,5 +114,17 @@ public class VaultCommand implements CommandExecutor {
         }
 
         return true;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] args) {
+        final List<String> completions = new ArrayList<>();
+        final Iterable<String> commands = List.of("1", "2", "3", "4", "5", "6", "7", "8", "9", "10");
+        if (args.length == 1) {
+            StringUtil.copyPartialMatches(args[0], commands, completions);
+            return completions;
+        } else {
+            return Collections.emptyList();
+        }
     }
 }
