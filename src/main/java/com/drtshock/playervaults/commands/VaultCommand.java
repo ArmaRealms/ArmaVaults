@@ -50,15 +50,14 @@ public class VaultCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
+        if (sender instanceof Player player) {
             if (PlayerVaults.getInstance().getInVault().containsKey(player.getUniqueId().toString())) {
                 // don't let them open another vault.
                 return true;
             }
 
             switch (args.length) {
-                case 1:
+                case 1 -> {
                     if (VaultOperations.openOwnVault(player, args[0], true)) {
                         PlayerVaults.getInstance().getInVault().put(player.getUniqueId().toString(), new VaultViewInfo(player.getUniqueId().toString(), Integer.parseInt(args[0])));
                     } else if (sender.hasPermission("playervaults.admin")) {
@@ -80,13 +79,12 @@ public class VaultCommand implements CommandExecutor, TabCompleter {
                             this.plugin.getTL().existingVaults().title().with("player", args[0]).with("vault", sb.toString().trim()).send(sender);
                         }
                     }
-                    break;
-                case 2:
+                }
+                case 2 -> {
                     if (!player.hasPermission("playervaults.admin")) {
                         this.plugin.getTL().noPerms().title().send(sender);
                         break;
                     }
-
                     int number;
                     try {
                         number = Integer.parseInt(args[1]);
@@ -94,7 +92,6 @@ public class VaultCommand implements CommandExecutor, TabCompleter {
                         this.plugin.getTL().mustBeNumber().title().send(sender);
                         return true;
                     }
-
                     String target = args[0];
                     OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(args[0]);
                     if (offlinePlayer != null) {
@@ -105,9 +102,8 @@ public class VaultCommand implements CommandExecutor, TabCompleter {
                     } else {
                         this.plugin.getTL().noOwnerFound().title().with("player", args[0]).send(sender);
                     }
-                    break;
-                default:
-                    this.plugin.getTL().help().title().send(sender);
+                }
+                default -> this.plugin.getTL().help().title().send(sender);
             }
         } else {
             this.plugin.getTL().playerOnly().title().send(sender);
@@ -119,7 +115,15 @@ public class VaultCommand implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] args) {
         final List<String> completions = new ArrayList<>();
-        final Iterable<String> commands = List.of("1", "2", "3", "4", "5", "6", "7", "8", "9", "10");
+
+        final List<String> perms = new ArrayList<>();
+        for (int i = 0; i <= 10; i++) {
+            if (commandSender.hasPermission("playervaults.amount." + i)) {
+                perms.add(String.valueOf(i));
+            }
+        }
+
+        final Iterable<String> commands = new ArrayList<>(perms);
         if (args.length == 1) {
             StringUtil.copyPartialMatches(args[0], commands, completions);
             return completions;
