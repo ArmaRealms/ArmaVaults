@@ -18,6 +18,7 @@
 
 package com.drtshock.playervaults;
 
+import com.drtshock.playervaults.commands.ConsoleCommand;
 import com.drtshock.playervaults.commands.ConvertCommand;
 import com.drtshock.playervaults.commands.DeleteCommand;
 import com.drtshock.playervaults.commands.HelpMeCommand;
@@ -50,10 +51,12 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import dev.kitteh.cardboardbox.CardboardBox;
 import sun.misc.Unsafe;
 
 import java.io.BufferedReader;
@@ -133,6 +136,11 @@ public class PlayerVaults extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        if (!CardboardBox.isReady()) {
+            this.getLogger().log(Level.SEVERE, "Could not initialize!", CardboardBox.getException());
+            this.getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
         instance = this;
         long start = System.currentTimeMillis();
         long time = System.currentTimeMillis();
@@ -169,6 +177,7 @@ public class PlayerVaults extends JavaPlugin {
         getCommand("pvconvert").setExecutor(new ConvertCommand(this));
         getCommand("pvsign").setExecutor(new SignCommand(this));
         getCommand("pvhelpme").setExecutor(new HelpMeCommand(this));
+        getCommand("pvconsole").setExecutor(new ConsoleCommand(this));
         update.meow = this.getClass().getDeclaredMethods().length;
         debug("registered commands", time);
         time = System.currentTimeMillis();
