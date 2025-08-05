@@ -23,7 +23,6 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -37,7 +36,6 @@ import org.kitteh.pastegg.PasteFile;
 import org.kitteh.pastegg.Visibility;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.ZoneOffset;
@@ -90,9 +88,9 @@ public class HelpMeCommand implements CommandExecutor {
 
                 private String getFile(Path file) {
                     try {
-                        return new String(Files.readAllBytes(file), StandardCharsets.UTF_8);
+                        return Files.readString(file);
                     } catch (IOException e) {
-                        return ExceptionUtils.getFullStackTrace(e);
+                        return e.getMessage();
                     }
                 }
 
