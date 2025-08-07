@@ -170,7 +170,9 @@ public class PlayerVaults extends JavaPlugin {
         debug("loaded signs", time);
         time = System.currentTimeMillis();
         update.spigotId = "%%__USER__%%";
-        getCommand("pv").setExecutor(new VaultCommand(this));
+        VaultCommand pv = new VaultCommand(this);
+        getCommand("pv").setExecutor(pv);
+        getCommand("pv").setTabCompleter(pv);
         getCommand("pvdel").setExecutor(new DeleteCommand(this));
         getCommand("pvconvert").setExecutor(new ConvertCommand(this));
         getCommand("pvsign").setExecutor(new SignCommand(this));
